@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="community_project.main.repository.mapper.CommentMapper">
+    <insert id="saveComment" useGeneratedKeys="true" keyProperty="id">
+        insert into comment(board_id, content, create_at, state, dtype)
+        values (#{comment.boardId}, #{comment.content}, #{comment.createAt}, #{comment.state}, #{comment.dType})
+    </insert>
+    <insert id="saveCommentLogin">
+        insert into comment_login(comment_login_id, member_id, role, member_name)
+        values (#{commentId}, #{memberId}, #{memberRole}, #{memberName})
+    </insert>
+    <insert id="saveCommentNoLogin">
+        insert into comment_nologin(comment_nologin_id, name, password)
+        values (#{commentId}, #{name}, #{password})
+    </insert>
+    <select id="findByBoardIdLogin" resultType="CommentLoginDto">
+        select c.comment_id, c.board_id, c.content, c.create_at, c.state, c.dtype, cl.member_id, cl.role, cl.member_name
+        from comment c
+            join comment_login cl on c.dtype = "login" and c.comment_id = cl.comment_login_id
+        where c.board_id = #{boardId}
+    </select>
+    <select id="findByBoardIdNoLogin" resultType="CommentNoLoginDto">
+        select c.comment_id, c.board_id, c.content, c.create_at, c.state, c.dtype, ncl.name, ncl.password
+        from comment c
+            join comment_nologin ncl on c.dtype = "nologin" and c.comment_id = ncl.comment_nologin_id
+        where c.board_id = #{boardId}
+    </select>
+    <delete id="deleteComment">
+        delete from comment where comment_id = #{commentId}
+    </delete>
+    <select id="findPasswordNoLogin" resultType="CommentNoLoginDto">
+        select c.comment_id, c.board_id, c.content, c.create_at, c.state, c.dtype, ncl.name, ncl.password
+        from comment c
+                 join comment_nologin ncl on c.dtype = "nologin" and c.comment_id = ncl.comment_nologin_id
+        where c.comment_id = #{commentId}
+    </select>
+
+
+</mapper>

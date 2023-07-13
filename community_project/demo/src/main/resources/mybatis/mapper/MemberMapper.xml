@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="community_project.main.repository.mapper.MemberMapper">
+    <insert id="save">
+        insert into member (member_id, name, password, role, create_at)
+        values(#{member.id},#{member.name},#{member.password},#{member.role},#{member.joinAt})
+    </insert>
+
+    <select id="findById" resultType="MemberDto">
+        select member_id as id, name, password, role, create_at as joinAt
+        from member
+        where member_id = #{id}
+    </select>
+    <select id="findByName" resultType="MemberDto">
+        select member_id, name, password, role, create_at
+        from member
+        where name = #{name}
+    </select>
+</mapper>

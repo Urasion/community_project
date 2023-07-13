@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "//mybatis.org/DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="community_project.main.repository.mapper.CategoryMapper">
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        insert into category(name, parent)
+        values (#{name}, #{parent})
+    </insert>
+    <select id="findByParent" resultType="CategoryDto">
+        select category_id, name, parent
+        from category
+        where parent is null
+    </select>
+    <select id="findByChild" resultType="CategoryDto">
+        select category_id, name, parent
+        from category
+        where parent is not null and parent = #{parentId}
+    </select>
+    <select id="findByParentId" resultType="CategoryDto">
+        select category_id, name, parent
+        from category
+        where category_id = #{parentId}
+    </select>
+    <select id="findByChildId" resultType="CategoryDto">
+        select category_id, name, parent
+        from category
+        where category_id = #{childId}
+    </select>
+
+</mapper>

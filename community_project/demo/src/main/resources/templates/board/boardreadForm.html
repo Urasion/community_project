@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">JCINSIDE</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/login(redirectURL = '/board/' + ${board.getCategoryId()} + '?pageNum=1')}">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/member/join(redirectURL = '/board/' + ${board.getCategoryId()} + '?pageNum=1')}">회원가입</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+<div style="margin: 50px">
+    <div>
+        <h5 th:text="${board.getTitle()}"></h5>
+    </div>
+    <div style="margin-top: 30px">
+        <div style="float: left; margin-right: 30px">
+            <h6 th:text="|작성자 : ${board.getMemberName()}|">
+            </h6>
+        </div>
+        <div  style="float: left; margin-right: 30px">
+            <h6 th:text="|작성일 : ${board.getCreateAt()}|">
+            </h6>
+        </div>
+        <div  style="float: left; margin-right: 30px">
+            <h6 th:text= "|조회수 : ${viewCount}|">
+            </h6>
+        </div>
+
+
+    </div>
+    <div style="margin-top: 50px; width: 700px; height: 700px; border-top: 1px solid #1a1e21;">
+        <h6 th:text="${board.getContent()}" style="margin: 30px">
+
+        </h6>
+    </div>
+    <div>
+        <h6>전체 댓글</h6>
+        <div style="border-top: 1px">
+            <table class="table">
+                <tbody class="table-group-divider">
+                <tr th:each="comment : ${commentList}">
+                    <th th:text="${comment.getName()}" th:if="${comment.getDType() == 'nologin'}" style="color: #1a1e21">
+                    </th>
+                    <th th:text="${comment.getName()}" th:if="${comment.getDType()} == 'login' and ${comment.getMemberRole()} == 'admin'" style="color: #fd7e14">
+                    </th>
+                    <th th:text="${comment.getName()}" th:if="${comment.getDType()} == 'login' and ${comment.getMemberRole()} == 'fixed'" style="color: #0a53be">
+                    </th>
+                    <th th:text="${comment.getName()}" th:if="${comment.getDType()} == 'login' and ${comment.getMemberRole()} == 'unfixed'" style="color: #0f5132">
+                    </th>
+                    <th th:text="${comment.getContent()}">
+                    </th>
+                    <th>
+                        <form th:if="${comment.getDType()} == 'nologin'" th:action="|/comment/${childId}/${boardId}/${comment.getId()}|" method="post">
+                            <label for="content" class="form-label">비밀번호</label>
+                            <input type="text"  class="form-control" id="commentPassword" name="commentPassword">
+                            <input type="hidden" name="dType" th:value="${comment.getDType()}">
+                            <button type="submit">
+                                삭제
+                            </button>
+                        </form>
+                        <form th:if="${loginRole} == 'admin'" th:action="|/comment/${childId}/${boardId}/${comment.getId()}|" method="post">
+                            <input type="hidden" name="dType" th:value="${comment.getDType()}">
+                            <button type="submit">
+                                삭제
+                            </button>
+
+                        </form>
+                    </th>
+                </tr>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div>
+        <h6>댓글 작성</h6>
+        <div style="border-top: 1px solid #1a1e21;">
+            <form th:action="|/comment/${childId}/${boardId}|" method="post">
+                <div>
+                    <label for="name" class="form-label">작성자이름</label>
+                    <input type="text" class="form-control" id="name" name="name">
+                </div>
+                <div>
+                    <label for="password" class="form-label">비밀번호</label>
+                    <input type="password" class="form-control" id="password" name="password">
+                </div>
+                <div>
+                    <label for="content" class="form-label">댓글</label>
+                    <input type="text" class="form-control" id="content" name="content">
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit"style="margin-top: 20px">댓글작성</button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
